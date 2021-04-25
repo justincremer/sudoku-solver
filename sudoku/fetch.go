@@ -13,15 +13,14 @@ type Response struct {
 	Squares []Cell `json:"squares"`
 }
 
-func (r *Response) fromJson(data []byte) error {
-	return json.Unmarshal(data, r)
+func (b *Board) getBoardData() *Response {
+	body := getDataResponse(b.Size, b.Difficulty)
+	dto := new(Response)
+	must(dto.fromJson(body))
+	return dto
 }
 
-func (b *Board) toJson() ([]byte, error) {
-	return json.Marshal(b.Cells)
-}
-
-func fetch(size, difficulty uint8) []byte {
+func getDataResponse(size, difficulty uint8) []byte {
 	url := fmt.Sprintf("http://www.cs.utep.edu/cheon/ws/sudoku/new/?size=%v&level=%v", size, difficulty)
 
 	res, err := http.Get(url)
@@ -33,4 +32,12 @@ func fetch(size, difficulty uint8) []byte {
 	body, err := ioutil.ReadAll(res.Body)
 	must(err)
 	return body
+}
+
+func (r *Response) fromJson(data []byte) error {
+	return json.Unmarshal(data, r)
+}
+
+func (b *Board) toJson() ([]byte, error) {
+	return json.Marshal(b.Cells)
 }
