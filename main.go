@@ -5,6 +5,8 @@ import (
 )
 
 func main() {
-	board := sudoku.Create(4, 1)
-	board.Print()
+	board := sudoku.Create(9, 1)
+	board.Display()
+	board.Solve()
+	board.Display()
 }

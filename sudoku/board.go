@@ -1,64 +1,34 @@
 package sudoku
 
 import (
-	"errors"
 	"fmt"
 	"log"
 )
 
 type Board struct {
-	Size       uint8
-	Difficulty uint8
+	Size       int
+	Difficulty int
 	Cells      []Cell `json:"squares"`
 }
 
 type Cell struct {
-	X   uint8 `json:"x"`
-	Y   uint8 `json:"y"`
-	Val uint8 `json:"value"`
+	X   int `json:"x"`
+	Y   int `json:"y"`
+	Val int `json:"value"`
 }
 
-// type possible map[string]bool
-
-func Create(size, difficulty uint8) *Board {
+// Initializes a random board with of size 4 or 9 and of difficulty 1, 2, or 3, returning a pointer to said board
+func Create(size, difficulty int) *Board {
 	board := Board{Size: size, Difficulty: difficulty, Cells: []Cell{}}
 	board.zero()
-	dto := board.getBoardData()
-	board.fill(dto)
+	dto := mapData(&board)
+	board.partFill(dto)
 
 	return &board
 }
 
-func (b *Board) zero() {
-	var i uint8 = 0
-	var j uint8 = 0
-	for ; i < b.Size; i++ {
-		for ; j < b.Size; j++ {
-			b.Cells = append(b.Cells, Cell{X: i, Y: j, Val: 0})
-		}
-		j = 0
-	}
-}
-
-func (b *Board) fill(dto *Response) {
-	for i := range dto.Squares {
-		curr := dto.Squares[i]
-		index, err := curr.GetIndex(b.Size)
-		must(err)
-
-		b.Cells[index].Val = curr.Val
-	}
-}
-
-func (b *Board) PrintGraph() {
-	fmt.Printf("Size: %v Difficulty: %v\n\n", b.Size, b.Difficulty)
-	for i := range b.Cells {
-		c := b.Cells[i]
-		fmt.Printf("{ X: %v, Y: %v, Value: %v }\n", c.X, c.Y, c.Val)
-	}
-}
-
-func (b *Board) Print() {
+// Display's the board in standard form
+func (b *Board) Display() {
 	fmt.Printf("Size: %v Difficulty: %v\n\n", b.Size, b.Difficulty)
 	s := int(b.Size)
 	for i := 0; i < s; i++ {
@@ -71,16 +41,49 @@ func (b *Board) Print() {
 	}
 }
 
-func (c *Cell) GetIndex(size uint8) (uint8, error) {
-	result := (c.X * size) + c.Y
-	if !(result < (size * size)) {
-
-		message := fmt.Sprintf("index %v out of range", result)
-		return result, errors.New(message)
+// Display's the board as a list of cells
+func (b *Board) DisplayChart() {
+	fmt.Printf("Size: %v Difficulty: %v\n\n", b.Size, b.Difficulty)
+	for i := range b.Cells {
+		c := b.Cells[i]
+		fmt.Printf("{ X: %v, Y: %v, Value: %v }\n", c.X, c.Y, c.Val)
 	}
-	return result, nil
 }
 
+// Zeroes out a board
+func (b *Board) zero() {
+	cells := []Cell{}
+	for i := 0; i < b.Size; i++ {
+		for j := 0; j < b.Size; j++ {
+			cells = append(cells, Cell{X: i, Y: j, Val: 0})
+		}
+	}
+
+	b.Cells = cells
+}
+
+// Partially fills a board with cells in a dataReponse
+func (b *Board) partFill(dto *Response) {
+	for i := range dto.Squares {
+		curr := dto.Squares[i]
+		index := b.getIndex(curr.X, curr.Y)
+		b.Cells[index].Val = curr.Val
+	}
+}
+
+// Returns a one dimensional index from two dimensional coordinates
+func (b *Board) getIndex(x, y int) int {
+	return (x * b.Size) + y
+}
+
+// Returns two dimensional coordinates from a one dimentional array index
+func (b *Board) getCoords(i int) (x, y int) {
+	x = i / b.Size
+	y = i % b.Size
+	return x, y
+}
+
+// Handles errors
 func must(err error) {
 	if err != nil {
 		log.Fatalf("Error, %v\n", err)
