@@ -5,12 +5,14 @@ import (
 	"log"
 )
 
+// A board object describing props and containing a list of mutable cells
 type Board struct {
 	Size       int
 	Difficulty int
 	Cells      []Cell `json:"squares"`
 }
 
+// A single cell in a sudoku board
 type Cell struct {
 	X   int `json:"x"`
 	Y   int `json:"y"`

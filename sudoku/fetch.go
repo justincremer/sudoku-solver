@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// DTO for mapping from api
+// Data transfer object for mapping from api
 type Response struct {
 	Success bool   `json:"response"`
 	Size    string `json:"size"`

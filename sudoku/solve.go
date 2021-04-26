@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// Gets the goods
 func (b *Board) Solve() bool {
 	// TODO: Check first if board is solved and if so, exit
 	for y := 0; y < b.Size; y++ {
@@ -30,6 +31,7 @@ func (b *Board) solveCell(c *Cell) bool {
 	return false
 }
 
+// An alternative take on the same fundemental recursive backtracking idea
 // func (b *Board) Solve() bool {
 // 	curr := b.next()
 // 	if curr == nil {
@@ -58,6 +60,7 @@ func (b *Board) solveCell(c *Cell) bool {
 // 	return nil
 // }
 
+// Checks a value against a cell's residing row, column, and block
 func (b *Board) checkAll(c Cell, val int) bool {
 	rowOk := check(b.getRow(c), val)
 	colOk := check(b.getCol(c), val)
@@ -65,6 +68,7 @@ func (b *Board) checkAll(c Cell, val int) bool {
 	return (rowOk && colOk && blockOk)
 }
 
+// Checks if a given value is in a slice of cells
 func check(block []Cell, val int) bool {
 	for i := range block {
 		if block[i].Val == val {
@@ -74,6 +78,8 @@ func check(block []Cell, val int) bool {
 	return true
 }
 
+// TODO: get hacky bits working on getRow and getCol to improve speed for larger puzzles
+// Returns the row a given cell resides in
 func (b *Board) getRow(c Cell) []Cell {
 	result := []Cell{}
 	for i := range b.Cells {
@@ -88,6 +94,7 @@ func (b *Board) getRow(c Cell) []Cell {
 	// return result
 }
 
+// Returns the column a given cell resides in
 func (b *Board) getCol(c Cell) []Cell {
 	result := []Cell{}
 	for i := range b.Cells {
@@ -97,6 +104,7 @@ func (b *Board) getCol(c Cell) []Cell {
 		}
 	}
 	return result
+
 	// index := c.X + 1
 	// result := []Cell{b.Cells[index]}
 	// for i := 0; i < (b.Size - 1); i++ {
