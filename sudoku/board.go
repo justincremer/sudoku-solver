@@ -22,14 +22,14 @@ func Create(size, difficulty int) *Board {
 	board := Board{Size: size, Difficulty: difficulty, Cells: []Cell{}}
 	board.zero()
 	dto := mapData(&board)
-	board.partFill(dto)
+	board.fill(dto)
 
 	return &board
 }
 
 // Display's the board in standard form
 func (b *Board) Display() {
-	fmt.Printf("Size: %v Difficulty: %v\n\n", b.Size, b.Difficulty)
+	fmt.Printf("Size: %v Difficulty: %v\n", b.Size, b.Difficulty)
 	s := int(b.Size)
 	for i := 0; i < s; i++ {
 		fmt.Printf("[%v]", i)
@@ -39,6 +39,7 @@ func (b *Board) Display() {
 		}
 		fmt.Printf("\n")
 	}
+	fmt.Printf("\n")
 }
 
 // Display's the board as a list of cells
@@ -63,7 +64,7 @@ func (b *Board) zero() {
 }
 
 // Partially fills a board with cells in a dataReponse
-func (b *Board) partFill(dto *Response) {
+func (b *Board) fill(dto *Response) {
 	for i := range dto.Squares {
 		curr := dto.Squares[i]
 		index := b.getIndex(curr.X, curr.Y)

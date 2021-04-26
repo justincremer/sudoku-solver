@@ -16,15 +16,15 @@ type Response struct {
 
 // Unmarshalls response into a data transfer object
 func mapData(b *Board) *Response {
-	body := getBody(b.Size, b.Difficulty)
+	body := getData(b.Size, b.Difficulty)
 	dto := new(Response)
 	must(dto.fromJson(body))
 	return dto
 }
 
 // Filters only the body from a data response
-func getBody(size, difficulty int) []byte {
-	res := getData(size, difficulty)
+func getData(size, difficulty int) []byte {
+	res := getResponse(size, difficulty)
 	if res.Body != nil {
 		defer res.Body.Close()
 	}
@@ -35,7 +35,7 @@ func getBody(size, difficulty int) []byte {
 }
 
 // Fetches a randomized sudoku board from a public api
-func getData(size, difficulty int) *http.Response {
+func getResponse(size, difficulty int) *http.Response {
 	url := fmt.Sprintf("http://www.cs.utep.edu/cheon/ws/sudoku/new/?size=%v&level=%v", size, difficulty)
 	res, err := http.Get(url)
 	must(err)
