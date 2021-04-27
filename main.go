@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	board := sudoku.Create(9, 1)
+	board := sudoku.Create(9, 3)
 	board.Display()
 	board.Solve()
 	board.Display()

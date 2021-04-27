@@ -10,6 +10,7 @@ type Board struct {
 	Size       int
 	Difficulty int
 	Cells      []Cell `json:"squares"`
+	Steps      int
 }
 
 // A single cell in a sudoku board
@@ -21,7 +22,7 @@ type Cell struct {
 
 // Initializes a random board with of size 4 or 9 and of difficulty 1, 2, or 3, returning a pointer to said board
 func Create(size, difficulty int) *Board {
-	board := Board{Size: size, Difficulty: difficulty, Cells: []Cell{}}
+	board := Board{Size: size, Difficulty: difficulty, Cells: []Cell{}, Steps: 0}
 	board.zero()
 	dto := mapData(&board)
 	board.fill(dto)
@@ -41,15 +42,11 @@ func (b *Board) Display() {
 		}
 		fmt.Printf("\n")
 	}
-	fmt.Printf("\n")
-}
 
-// Display's the board as a list of cells
-func (b *Board) DisplayChart() {
-	fmt.Printf("Size: %v Difficulty: %v\n\n", b.Size, b.Difficulty)
-	for i := range b.Cells {
-		c := b.Cells[i]
-		fmt.Printf("{ X: %v, Y: %v, Value: %v }\n", c.X, c.Y, c.Val)
+	fmt.Printf("\n")
+	if b.Steps > 0 {
+		// Writes solve data if puzzle has been solved
+		fmt.Printf("Took %v steps to complete\n", b.Steps)
 	}
 }
 

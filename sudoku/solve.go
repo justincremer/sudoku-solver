@@ -22,6 +22,7 @@ func (b *Board) solveCell(c *Cell) bool {
 	for i := 1; i <= b.Size; i++ {
 		if b.checkAll(*c, i) {
 			c.Val = i
+			b.Steps++
 			if b.Solve() {
 				return true
 			}
