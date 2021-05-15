@@ -8,8 +8,8 @@ import (
 
 const (
 	size       int = 9
-	difficulty int = 1
-	tests      int = 10
+	difficulty int = 2
+	tests      int = 100
 )
 
 func main() {
@@ -20,26 +20,28 @@ func main() {
 	fmt.Printf("\n")
 
 	go multiTest(writer)
-	for i := range writer {
-		fmt.Printf("%v\n", i)
+	for i := 0; i < tests; i++ {
+		fmt.Println(<-writer)
 	}
 }
 
 func singleTest(size, difficulty int) {
-	board := sudoku.Create(9, 3)
+	board := sudoku.Create(9, 2)
 	board.Display()
 	board.Solve()
 	board.Display()
 }
 
 func multiTest(writer chan<- string) {
-	for i := 1; i <= tests; i++ {
-		go func(i int) {
-			board := sudoku.Create(size, difficulty)
-			start := time.Now().Nanosecond()
-			board.Solve()
-			elapsed := ((time.Now().Nanosecond() - start) / 1000000)
-			writer <- fmt.Sprintf("Board %d: %d steps, %dms", i, board.Steps, elapsed)
-		}(i)
-	}
+	func() {
+		for i := 0; i < tests; i++ {
+			go func(i int) {
+				board := sudoku.Create(size, difficulty)
+				start := time.Now().Nanosecond()
+				board.Solve()
+				elapsed := ((time.Now().Nanosecond() - start) / 1000000)
+				writer <- fmt.Sprintf("Board %d: %d steps, %dms", i+1, board.Steps, elapsed)
+			}(i)
+		}
+	}()
 }
