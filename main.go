@@ -6,18 +6,24 @@ import (
 	"time"
 )
 
-const (
-	size       int = 9
-	difficulty int = 2
-	tests      int = 100
+var (
+	size       int
+	difficulty int
+	tests      int
 )
+
+func init() {
+	size = 9
+	difficulty = 2
+	tests = 50
+}
 
 func main() {
 	writer := make(chan string)
 	defer close(writer)
 
-	singleTest(size, difficulty)
-	fmt.Printf("\n")
+	// singleTest(size, difficulty)
+	// fmt.Printf("\n")
 
 	go multiTest(writer)
 	for i := 0; i < tests; i++ {
@@ -37,11 +43,12 @@ func multiTest(writer chan<- string) {
 		for i := 0; i < tests; i++ {
 			go func(i int) {
 				board := sudoku.Create(size, difficulty)
-				start := time.Now().Nanosecond()
+				start := time.Now()
 				board.Solve()
-				elapsed := ((time.Now().Nanosecond() - start) / 1000000)
+				elapsed := time.Since(start) / 1000000
 				writer <- fmt.Sprintf("Board %d: %d steps, %dms", i+1, board.Steps, elapsed)
 			}(i)
 		}
 	}()
 }
+
