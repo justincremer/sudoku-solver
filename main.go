@@ -39,16 +39,13 @@ func singleTest(size, difficulty int) {
 }
 
 func multiTest(writer chan<- string) {
-	func() {
-		for i := 0; i < tests; i++ {
-			go func(i int) {
-				board := sudoku.Create(size, difficulty)
-				start := time.Now()
-				board.Solve()
-				elapsed := time.Since(start) / 1000000
-				writer <- fmt.Sprintf("Board %d: %d steps, %dms", i+1, board.Steps, elapsed)
-			}(i)
-		}
-	}()
+	for i := 0; i < tests; i++ {
+		go func(i int) {
+			board := sudoku.Create(size, difficulty)
+			start := time.Now()
+			board.Solve()
+			elapsed := time.Since(start) / 1000000
+			writer <- fmt.Sprintf("Board %d: %d steps, %dms", i+1, board.Steps, elapsed)
+		}(i)
+	}
 }
-

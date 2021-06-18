@@ -32,35 +32,6 @@ func (b *Board) solveCell(c *Cell) bool {
 	return false
 }
 
-// An alternative take on the same fundemental recursive backtracking idea
-// func (b *Board) Solve() bool {
-// 	curr := b.next()
-// 	if curr == nil {
-// 		return true
-// 	}
-
-// 	for i := 1; i < 10; i++ {
-// 		if b.checkAll(*curr, i) {
-// 			curr.Val = i
-// 			if b.Solve() {
-// 				return true
-// 			}
-// 			curr.Val = 0
-// 		}
-// 	}
-// 	return false
-// }
-
-// // Returns the next zero value in the board
-// func (b *Board) next() *Cell {
-// 	for i := range b.Cells {
-// 		if b.Cells[i].Val == 0 {
-// 			return &b.Cells[i]
-// 		}
-// 	}
-// 	return nil
-// }
-
 // Checks a value against a cell's residing row, column, and block
 func (b *Board) checkAll(c Cell, val int) bool {
 	rowOk := check(b.getRow(c), val)
